@@ -7,6 +7,12 @@ A modern virtual student-card web application, built with Asp.Net Core MVC.
 - Asp.Net Core MVC and C#
 - Supabase
 
+## Screens
+
+![Web Screens](web_design.png)
+
+---
+
 ## Getting Started
 
 ```bash
