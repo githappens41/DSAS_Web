@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DSAS - Protection Services</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header class="navbar">
+        <a class="brand" asp-controller="Home" asp-action="Index">DSAS - Protection Services</a>
+        <nav>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Pending">Reviews</a>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="inline-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="link-button">Sign Out</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Register</a>
+            }
+        </nav>
+    </header>
+
+    <main class="page">
+        @if (TempData["Info"] is string info)
+        {
+            <div class="alert alert-info">@info</div>
+        }
+        @RenderBody()
+    </main>
+</body>
+</html>

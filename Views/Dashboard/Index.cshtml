@@ -1,0 +1,66 @@
+﻿@model DashboardViewModel
+
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="value">@Model.Submitted</div>
+        <div class="label">Submitted</div>
+    </div>
+    <div class="stat-card">
+        <div class="value">@Model.Pending</div>
+        <div class="label">Pending</div>
+    </div>
+    <div class="stat-card">
+        <div class="value">@Model.Approved</div>
+        <div class="label">Approved</div>
+    </div>
+    <div class="stat-card">
+        <div class="value">@Model.Rejected</div>
+        <div class="label">Rejected</div>
+    </div>
+</div>
+
+<form asp-controller="Dashboard" asp-action="Index" method="get" class="search-row">
+    <input type="text" name="search" value="@Model.SearchTerm" placeholder="Search by student number or name" />
+    <select name="status">
+        <option value="">All statuses</option>
+        <option value="Pending" selected="@(Model.StatusFilter == "Pending" ? "selected" : null)">Pending</option>
+        <option value="Approved" selected="@(Model.StatusFilter == "Approved" ? "selected" : null)">Approved</option>
+        <option value="Rejected" selected="@(Model.StatusFilter == "Rejected" ? "selected" : null)">Rejected</option>
+    </select>
+    <button type="submit" class="btn-link">Filter</button>
+</form>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Student Initials &amp; Surname</th>
+            <th>Student No</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.Registrations)
+        {
+            var initials = r.Student is not null && r.Student.FirstName.Length > 0
+            ? $"{r.Student.FirstName[0]}. {r.Student.LastName}"
+            : "Unknown";
+
+            <tr>
+                <td>@initials</td>
+                <td>@(r.Student?.StudentNumber ?? "-")</td>
+                <td><span class="badge badge-@r.Status.ToLower()">@r.Status</span></td>
+                <td>
+                    <a asp-controller="Registrations" asp-action="Details" asp-route-id="@r.RegistrationId">Details</a>
+                    <span class="btn-link-disabled" title="Editing applicant details is not available">Edit</span>
+                    <form asp-controller="Registrations" asp-action="Delete" asp-route-id="@r.RegistrationId"
+                          method="post" class="inline-form"
+                          onsubmit="return confirm('Delete this registration? This cannot be undone.');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-link" style="color: var(--red);">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,74 @@
+﻿using DSAS.Web.Models;
+using DSAS.Web.Repositories;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DSAS.Web.Controllers;
+
+public class RegistrationsController : StaffControllerBase
+{
+    private readonly IRegistrationRepository _registrationRepository;
+
+    public RegistrationsController(IRegistrationRepository registrationRepository)
+    {
+        _registrationRepository = registrationRepository;
+    }
+
+    // Single combined screen: view (Full Name, Student Number, Programme,
+    // submitted photo, proof of registration, current status) PLUS
+    // Approve/Reject. Staff can view and update status, but there is no
+    // separate "edit the applicant's data" screen anywhere -- the
+    // Dashboard's "Edit" link is intentionally inert (see Dashboard view).
+    public async Task<IActionResult> Details(string id)
+    {
+        if (RequireToken() is IActionResult redirect) return redirect;
+
+        var registration = await _registrationRepository.GetByIdAsync(AccessToken!, id);
+        if (registration is null) return NotFound();
+
+        return View(new RegistrationDetailViewModel { Registration = registration });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Approve(string id)
+    {
+        if (RequireToken() is IActionResult redirect) return redirect;
+
+        await _registrationRepository.UpdateStatusAsync(AccessToken!, id, "Approved", null, StaffId);
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    // One action covers both "reject" and "request resubmission" --
+    // same status ("Rejected"), the reason text is what tells the
+    // student which one it was.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reject(string id, RejectViewModel model)
+    {
+        if (RequireToken() is IActionResult redirect) return redirect;
+
+        if (!ModelState.IsValid)
+        {
+            var registration = await _registrationRepository.GetByIdAsync(AccessToken!, id);
+            if (registration is null) return NotFound();
+            return View("Details", new RegistrationDetailViewModel
+            {
+                Registration = registration,
+                ErrorMessage = "Please provide a reason for rejection."
+            });
+        }
+
+        await _registrationRepository.UpdateStatusAsync(AccessToken!, id, "Rejected", model.Reason, StaffId);
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(string id)
+    {
+        if (RequireToken() is IActionResult redirect) return redirect;
+
+        await _registrationRepository.DeleteAsync(AccessToken!, id);
+        return RedirectToAction("Index", "Dashboard");
+    }
+}
