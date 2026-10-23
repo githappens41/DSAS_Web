@@ -380,8 +380,23 @@ table.data-table {
     }
 
 .hero {
+    background-image: linear-gradient(rgba(20, 15, 35, 0.75), rgba(20, 15, 35, 0.75)), url('/images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 100px 20px;
+    padding: 20px;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
 }
 
     .hero h1 {
