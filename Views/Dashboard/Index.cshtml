@@ -1,89 +1,31 @@
 ﻿@model DashboardViewModel
 
-<style>
-    /* Styling to match the Figma Prototype */
-    .stats-row {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-
-    .stat-card {
-        flex: 1;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .stat-card .value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-card .label {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-    /* Figma Colors */
-    .card-submitted {
-        background-color: #2b1c54;
-        color: white;
-    }
-
-    .card-pending {
-        background-color: #FFC107;
-        color: #000;
-    }
-
-    .card-approved {
-        background-color: #28A745;
-        color: white;
-    }
-
-    .card-rejected {
-        background-color: #DC3545;
-        color: white;
-    }
-</style>
-
 <div class="stats-row">
-    <!-- Submitted (No status filter) -->
-    <a asp-controller="Dashboard" asp-action="Index" class="stat-card card-submitted">
+    
+    <a asp-controller="Dashboard" asp-action="Index" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="value">@Model.Submitted</div>
         <div class="label">Submitted</div>
     </a>
 
-    <!-- Pending -->
-    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Pending" class="stat-card card-pending">
+   
+    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Pending" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="value">@Model.Pending</div>
         <div class="label">Pending</div>
     </a>
 
-    <!-- Approved -->
-    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Approved" class="stat-card card-approved">
+    
+    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Approved" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="value">@Model.Approved</div>
         <div class="label">Approved</div>
     </a>
 
-    <!-- Rejected -->
-    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Rejected" class="stat-card card-rejected">
+    
+    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Rejected" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="value">@Model.Rejected</div>
         <div class="label">Rejected</div>
     </a>
 </div>
 
-<!-- The rest of your code remains exactly the same -->
 <form asp-controller="Dashboard" asp-action="Index" method="get" class="search-row">
     <input type="text" name="search" value="@Model.SearchTerm" placeholder="Search by student number or name" />
     <select name="status">
