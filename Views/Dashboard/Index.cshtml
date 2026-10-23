@@ -42,6 +42,7 @@
         <tr>
             <th>Student Initials &amp; Surname</th>
             <th>Student No</th>
+            <th>Submitted</th>
             <th>Status</th>
             <th></th>
         </tr>
@@ -56,16 +57,23 @@
             <tr>
                 <td>@initials</td>
                 <td>@(r.Student?.StudentNumber ?? "-")</td>
+
+                <td>@(r.SubmittedDate?.ToString("dd MMM") ?? "-")</td>
+
                 <td><span class="badge badge-@r.Status.ToLower()">@r.Status</span></td>
                 <td>
-                    <a asp-controller="Registrations" asp-action="Details" asp-route-id="@r.RegistrationId">Details</a>
-                    <span class="btn-link-disabled" title="Editing applicant details is not available">Edit</span>
-                    <form asp-controller="Registrations" asp-action="Delete" asp-route-id="@r.RegistrationId"
-                          method="post" class="inline-form"
-                          onsubmit="return confirm('Delete this registration? This cannot be undone.');">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn-link" style="color: var(--red);">Delete</button>
-                    </form>
+                    <div class="action-links">
+                        <a asp-controller="Registrations" asp-action="Details" asp-route-id="@r.RegistrationId">Details</a>
+
+                        <a asp-controller="Registrations" asp-action="Details" asp-route-id="@r.RegistrationId">Edit</a>
+
+                        <form asp-controller="Registrations" asp-action="Delete" asp-route-id="@r.RegistrationId"
+                              method="post" class="inline-form"
+                              onsubmit="return confirm('Delete this registration? This cannot be undone.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-link-delete">Delete</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         }

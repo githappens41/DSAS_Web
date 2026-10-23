@@ -39,6 +39,9 @@ public class RegistrationDto
     [JsonPropertyName("registration_id")]
     public string RegistrationId { get; set; } = string.Empty;
 
+    [JsonPropertyName("created_at")]
+    public DateTime? SubmittedDate { get; set; }
+
     [JsonPropertyName("student_id")]
     public string StudentId { get; set; } = string.Empty;
 
