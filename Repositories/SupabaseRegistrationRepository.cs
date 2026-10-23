@@ -2,7 +2,7 @@
 using DSAS.Web.Models;
 using DSAS.Web.Repositories;
 
-namespace DSAS_Web.Repositories
+namespace DSAS.Web.Repositories
 {
     public class SupabaseRegistrationRepository : SupabaseRepositoryBase, IRegistrationRepository
     {
