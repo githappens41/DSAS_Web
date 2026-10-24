@@ -13,20 +13,23 @@ namespace DSAS.Web.Repositories
 
         public async Task<List<RegistrationDto>> GetAllAsync(string accessToken, string? search = null, string? status = null)
         {
-            // We use "select=*,students(*)" to join the student table so the nested StudentDto is populated
-            var request = NewRequest(HttpMethod.Get, "registration?select=*,students(*)", accessToken);
+            var request = NewRequest(HttpMethod.Get, "student_cards?select=*", accessToken);
             var response = await Http.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode) return new List<RegistrationDto>();
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Supabase Error: {response.StatusCode} - {error}");
+            }
 
             var list = await response.Content.ReadFromJsonAsync<List<RegistrationDto>>() ?? new List<RegistrationDto>();
 
-            // Apply search filter using the NESTED Student object
             if (!string.IsNullOrEmpty(search))
             {
                 list = list.Where(r =>
-                    (r.Student != null && r.Student.StudentNumber != null && r.Student.StudentNumber.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
-                    (r.Student != null && r.Student.FirstName != null && r.Student.FirstName.Contains(search, StringComparison.OrdinalIgnoreCase))
+                    (r.FullName != null && r.FullName.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                    (r.StudentNumber != null && r.StudentNumber.Contains(search, StringComparison.OrdinalIgnoreCase))
                 ).ToList();
             }
 
