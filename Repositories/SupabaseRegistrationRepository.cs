@@ -43,7 +43,8 @@ namespace DSAS.Web.Repositories
 
         public async Task<RegistrationDto?> GetByIdAsync(string accessToken, string registrationId)
         {
-            var request = NewRequest(HttpMethod.Get, $"registration?registration_id=eq.{registrationId}&select=*,students(*)", accessToken);
+            // It MUST look at 'student_cards' and the column 'id'
+            var request = NewRequest(HttpMethod.Get, $"student_cards?id=eq.{registrationId}&select=*", accessToken);
             var response = await Http.SendAsync(request);
 
             if (!response.IsSuccessStatusCode) return null;

@@ -1,16 +1,19 @@
 ﻿using DSAS.Web.Models;
 using DSAS.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace DSAS.Web.Controllers;
 
 public class RegistrationsController : StaffControllerBase
 {
     private readonly IRegistrationRepository _registrationRepository;
+    private readonly IConfiguration _configuration;
 
-    public RegistrationsController(IRegistrationRepository registrationRepository)
+    public RegistrationsController(IRegistrationRepository registrationRepository, IConfiguration configuration)
     {
         _registrationRepository = registrationRepository;
+        _configuration = configuration;
     }
 
     // Single combined screen: view (Full Name, Student Number, Programme,
@@ -24,6 +27,9 @@ public class RegistrationsController : StaffControllerBase
 
         var registration = await _registrationRepository.GetByIdAsync(AccessToken!, id);
         if (registration is null) return NotFound();
+
+        // Pass the Supabase URL so the view can construct the file URLs
+        ViewBag.SupabaseUrl = _configuration["Supabase:Url"];
 
         return View(new RegistrationDetailViewModel { Registration = registration });
     }

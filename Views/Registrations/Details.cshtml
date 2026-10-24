@@ -1,0 +1,88 @@
+﻿@model DSAS.Web.Models.RegistrationDetailViewModel
+@{
+    ViewData["Title"] = "Review Registration";
+    var reg = Model.Registration;
+    
+    // Construct the public storage URLs (assuming your bucket is named 'student-uploads' based on your Flutter code)
+    var baseUrl = ViewBag.SupabaseUrl;
+    var bucketUrl = $"{baseUrl}/storage/v1/object/public/student-uploads/";
+    
+    var photoUrl = string.IsNullOrEmpty(reg.PhotoUrl) ? "" : $"{bucketUrl}{reg.PhotoUrl}";
+    var proofUrl = string.IsNullOrEmpty(reg.ProofOfRegistrationUrl) ? "" : $"{bucketUrl}{reg.ProofOfRegistrationUrl}";
+}
+
+<div class="review-container">
+    <h3 class="review-title">Review registration - @reg.FullName @reg.StudentNumber</h3>
+
+    <div class="upload-section">
+        <!-- Photo Box -->
+        <div class="upload-box">
+            @if (!string.IsNullOrEmpty(photoUrl))
+            {
+                <a href="@photoUrl" target="_blank">
+                    <img src="@photoUrl" alt="Student Photo" class="uploaded-img" />
+                </a>
+            }
+            else
+            {
+                <span class="placeholder-text">Submitted photo</span>
+            }
+        </div>
+
+        <!-- Proof of Registration Box -->
+        <div class="upload-box">
+            @if (!string.IsNullOrEmpty(proofUrl))
+            {
+                <a href="@proofUrl" target="_blank" class="pdf-link">
+                    <span class="pdf-icon">📄</span> View PDF Document
+                </a>
+            }
+            else
+            {
+                <span class="placeholder-text">Proof of Registration</span>
+            }
+        </div>
+    </div>
+
+    <!-- Details List -->
+    <div class="details-list">
+        <div class="detail-row">
+            <span class="detail-label">Programme</span>
+            <span class="detail-value">@(string.IsNullOrEmpty(reg.Programme) ? "N/A" : reg.Programme)</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Submitted</span>
+            <span class="detail-value">@(reg.SubmittedDate?.ToString("dd MMM") ?? "N/A")</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Current status</span>
+            <span class="badge badge-@reg.Status.ToLower()">@reg.Status</span>
+        </div>
+        @if (!string.IsNullOrEmpty(reg.RejectionReason))
+        {
+            <div class="detail-row">
+                <span class="detail-label text-danger">Reason</span>
+                <span class="detail-value text-danger">@reg.RejectionReason</span>
+            </div>
+        }
+    </div>
+
+    <!-- Action Buttons (Only show if Pending) -->
+    @if (reg.Status.ToLower() == "pending")
+    {
+        <div class="action-buttons">
+            <!-- Approve Form -->
+            <form asp-action="Approve" asp-route-id="@reg.RegistrationId" method="post" class="form-half">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-approve">Approve</button>
+            </form>
+
+            <!-- Reject Form -->
+            <form asp-action="Reject" asp-route-id="@reg.RegistrationId" method="post" class="form-half d-flex gap-2">
+                @Html.AntiForgeryToken()
+                <input type="text" name="Reason" class="form-control" placeholder="Reason for rejection..." required />
+                <button type="submit" class="btn-reject">Reject</button>
+            </form>
+        </div>
+    }
+</div>
