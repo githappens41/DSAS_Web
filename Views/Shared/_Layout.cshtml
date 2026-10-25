@@ -10,19 +10,32 @@
     <header class="navbar">
         <a class="brand" asp-controller="Home" asp-action="Index">DSAS - Protection Services</a>
         <nav>
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Pending">Reviews</a>
-                <form asp-controller="Account" asp-action="Logout" method="post" class="inline-form">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="link-button">Sign Out</button>
-                </form>
+            @{
+                // Get the current controller and action (page) the user is on
+                var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+                var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+
+                // Check if we are on the Home, Login, or Register pages
+                bool isPublicPage = (currentController == "Home" && currentAction == "Index") ||
+                (currentController == "Account" && (currentAction == "Login" || currentAction == "Register"));
             }
-            else
+
+            @if (!isPublicPage)
             {
-                <a asp-controller="Account" asp-action="Login">Login</a>
-                <a asp-controller="Account" asp-action="Register">Register</a>
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    <a asp-controller="Dashboard" asp-action="Index" asp-route-status="Pending">Reviews</a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline-form">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="link-button">Sign Out</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login">Login</a>
+                    <a asp-controller="Account" asp-action="Register">Register</a>
+                }
             }
         </nav>
     </header>

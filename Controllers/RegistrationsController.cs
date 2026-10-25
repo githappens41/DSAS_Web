@@ -57,6 +57,10 @@ public class RegistrationsController : StaffControllerBase
         {
             var registration = await _registrationRepository.GetByIdAsync(AccessToken!, id);
             if (registration is null) return NotFound();
+
+            // Pass the Supabase URL back to the view in case of validation error
+            ViewBag.SupabaseUrl = _configuration["Supabase:Url"];
+
             return View("Details", new RegistrationDetailViewModel
             {
                 Registration = registration,
@@ -65,6 +69,10 @@ public class RegistrationsController : StaffControllerBase
         }
 
         await _registrationRepository.UpdateStatusAsync(AccessToken!, id, "Rejected", model.Reason, StaffId);
+
+        // THIS IS THE POP-UP MESSAGE
+        TempData["SuccessMessage"] = "Application rejected successfully.";
+
         return RedirectToAction(nameof(Details), new { id });
     }
 

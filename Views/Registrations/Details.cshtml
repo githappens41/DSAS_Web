@@ -9,6 +9,14 @@
     var photoUrl = string.IsNullOrEmpty(reg.PhotoUrl) ? "" : $"{bucketUrl}{reg.PhotoUrl}";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="max-width: 1000px; margin: 20px auto;">
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="review-wrapper">
     <div class="review-header">
         <h2>Application Review</h2>

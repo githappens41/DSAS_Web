@@ -716,3 +716,40 @@ table.data-table {
     .form-control::placeholder {
         color: #888;
     }
+
+/* --- Custom Modal Styling  --- */
+.custom-modal {
+    background-color: #23222a; /* Dark modal background */
+    color: #e0e0e0;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+    .custom-modal .modal-header {
+        padding-bottom: 0;
+    }
+
+    .custom-modal .modal-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+.custom-input {
+    background-color: #2b2b36;
+    border: 1px solid #444;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+    .custom-input:focus {
+        background-color: #333;
+        color: white;
+        border-color: #dc3545;
+        box-shadow: none;
+    }
+
+    .custom-input::placeholder {
+        color: #888;
+    }
